@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elite Offseason Development Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #161616;
+    --border: #222222;
+    --lime: #c8f135;
+    --lime-dim: #9cb82a;
+    --white: #f0f0f0;
+    --muted: #666666;
+    --red: #ff3c3c;
+    --orange: #ff8c42;
+    --blue: #3ca9ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--lime);
+  }
+
+  .badge {
+    background: var(--lime);
+    color: var(--black);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 1px;
+  }
+
+  /* NAV TABS */
+  .tabs {
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    padding: 0 32px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 14px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+  .tab:hover { color: var(--white); }
+  .tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+
+  /* MAIN */
+  main { padding: 32px; max-width: 1200px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* PROFILE CARD */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--lime);
+    line-height: 1;
+  }
+
+  .stat-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* SECTION HEADER */
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    color: var(--white);
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  /* PHASE CARDS */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phase-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .phase-card.p1::before { background: var(--blue); }
+  .phase-card.p2::before { background: var(--orange); }
+  .phase-card.p3::before { background: var(--lime); }
+  .phase-card.p4::before { background: var(--red); }
+
+  .phase-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: var(--border);
+    position: absolute;
+    right: 16px;
+    top: 8px;
+    line-height: 1;
+  }
+
+  .phase-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .phase-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+
+  .phase-card.p1 .phase-name { color: var(--blue); }
+  .phase-card.p2 .phase-name { color: var(--orange); }
+  .phase-card.p3 .phase-name { color: var(--lime); }
+  .phase-card.p4 .phase-name { color: var(--red); }
+
+  .phase-weeks {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .phase-goal {
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .phase-focuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+
+  .tag.blue { background: rgba(60,169,255,0.12); color: var(--blue); border: 1px solid rgba(60,169,255,0.25); }
+  .tag.orange { background: rgba(255,140,66,0.12); color: var(--orange); border: 1px solid rgba(255,140,66,0.25); }
+  .tag.lime { background: rgba(200,241,53,0.12); color: var(--lime); border: 1px solid rgba(200,241,53,0.25); }
+  .tag.red { background: rgba(255,60,60,0.12); color: var(--red); border: 1px solid rgba(255,60,60,0.25); }
+  .tag.grey { background: rgba(102,102,102,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  /* WEEKLY SCHEDULE */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 900px) {
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 14px;
+    position: relative;
+  }
+
+  .day-card.rest-day {
+    border-style: dashed;
+    opacity: 0.7;
+  }
+
+  .day-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--lime);
+    margin-bottom: 2px;
+  }
+
+  .day-type {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .day-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  .day-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .dot-lime { background: var(--lime); }
+  .dot-blue { background: var(--blue); }
+  .dot-orange { background: var(--orange); }
+  .dot-red { background: var(--red); }
+  .dot-grey { background: var(--muted); }
+
+  /* SESSION BLOCKS */
+  .session-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .session-header {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+  }
+
+  .session-header:hover { background: rgba(255,255,255,0.02); }
+
+  .session-title-wrap { display: flex; align-items: center; gap: 12px; }
+
+  .session-day {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--lime);
+  }
+
+  .session-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .session-duration {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+
+  .session-block.open .chevron { transform: rotate(180deg); }
+
+  .session-body {
+    display: none;
+    padding: 20px;
+  }
+
+  .session-block.open .session-body { display: block; }
+
+  .session-phase {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 12px 24px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+
+  .session-phase:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .phase-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--lime);
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+
+  .phase-content { font-size: 13px; color: var(--white); line-height: 1.6; }
+  .phase-content strong { color: var(--lime); font-weight: 600; }
+  .phase-content em { color: var(--muted); font-style: normal; font-size: 12px; }
+
+  /* STRENGTH TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 13px;
+  }
+
+  th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--dark);
+  }
+
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(34,34,34,0.5);
+    color: var(--white);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td.lime { color: var(--lime); font-family: 'Space Mono', monospace; font-size: 12px; }
+  td.muted { color: var(--muted); font-size: 12px; }
+
+  /* METRIC CARDS */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .metric-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px;
+  }
+
+  .metric-icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+
+  .metric-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .metric-test {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+
+  .metric-target {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--lime);
+    letter-spacing: 1px;
+  }
+
+  /* NUTRITION */
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .nut-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px;
+    border-top: 3px solid;
+  }
+
+  .nut-card.carb { border-top-color: var(--orange); }
+  .nut-card.protein { border-top-color: var(--blue); }
+  .nut-card.fat { border-top-color: var(--lime); }
+  .nut-card.hydra { border-top-color: #5bc4f5; }
+  .nut-card.sleep { border-top-color: #b77ff5; }
+  .nut-card.timing { border-top-color: var(--red); }
+
+  .nut-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .nut-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .nut-card.carb .nut-value { color: var(--orange); }
+  .nut-card.protein .nut-value { color: var(--blue); }
+  .nut-card.fat .nut-value { color: var(--lime); }
+  .nut-card.hydra .nut-value { color: #5bc4f5; }
+  .nut-card.sleep .nut-value { color: #b77ff5; }
+  .nut-card.timing .nut-value { color: var(--red); }
+
+  .nut-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* CALLOUT */
+  .callout {
+    background: rgba(200,241,53,0.06);
+    border: 1px solid rgba(200,241,53,0.2);
+    border-left: 3px solid var(--lime);
+    border-radius: 4px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--white);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .callout.warn {
+    background: rgba(255,60,60,0.05);
+    border-color: rgba(255,60,60,0.2);
+    border-left-color: var(--red);
+  }
+
+  .callout strong { color: var(--lime); }
+  .callout.warn strong { color: var(--red); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* LIST */
+  ul.plan-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 16px;
+  }
+
+  ul.plan-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(34,34,34,0.5);
+    font-size: 13px;
+    color: var(--white);
+    line-height: 1.5;
+  }
+
+  ul.plan-list li:last-child { border-bottom: none; }
+
+  ul.plan-list li::before {
+    content: '→';
+    color: var(--lime);
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+  }
+
+  h3.block-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 14px;
+    margin-top: 24px;
+  }
+
+  h3.block-title:first-child { margin-top: 0; }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .two-col { grid-template-columns: 1fr; }
+    .week-grid { grid-template-columns: 1fr 1fr; }
+    .session-phase { grid-template-columns: 1fr; }
+    header { padding: 0 16px; }
+    main { padding: 16px; }
+    .tabs { padding: 0 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ELITE OFFSEASON</div>
+  <div class="badge">CM/DM · ACADEMY · 6–8 WKS</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('overview')">Overview</button>
+  <button class="tab" onclick="showTab('weekly')">Weekly Schedule</button>
+  <button class="tab" onclick="showTab('sessions')">Session Detail</button>
+  <button class="tab" onclick="showTab('strength')">Strength</button>
+  <button class="tab" onclick="showTab('speed')">Speed & Power</button>
+  <button class="tab" onclick="showTab('technical')">Technical</button>
+  <button class="tab" onclick="showTab('recovery')">Recovery</button>
+  <button class="tab" onclick="showTab('nutrition')">Nutrition</button>
+  <button class="tab" onclick="showTab('metrics')">Metrics</button>
+</div>
+
+<main>
+
+<!-- ═══════════════════ OVERVIEW ═══════════════════ -->
+<div class="section active" id="overview">
+  <div class="section-title">YOUR PROFILE</div>
+  <div class="section-sub">16–17 · CM/DM · Academy · Full Gym + Pitch Access · No Injury History</div>
+
+  <div class="profile-grid">
+    <div class="stat-card">
+      <div class="stat-label">Position</div>
+      <div class="stat-value">CM/DM</div>
+      <div class="stat-sub">Central Midfielder</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Level</div>
+      <div class="stat-value">ACAD</div>
+      <div class="stat-sub">Youth Development</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Offseason</div>
+      <div class="stat-value">7 WK</div>
+      <div class="stat-sub">6–8 Week Block</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Training Age</div>
+      <div class="stat-value">~3M</div>
+      <div class="stat-sub">Consistent gym base</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Priority #1</div>
+      <div class="stat-value">STR</div>
+      <div class="stat-sub">Physicality</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Priority #2</div>
+      <div class="stat-value">SPD</div>
+      <div class="stat-sub">Acceleration</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Coach's Note:</strong> At 16–17 with ~3 months of consistent gym training, you are in a critical development window. Your body will respond rapidly to structured overload. The priority is building a genuine physical foundation — strength, speed, and football conditioning — while keeping your technical work sharp. Every session has a purpose.
+  </div>
+
+  <div class="callout warn">
+    <strong>Biggest Offseason Mistake to Avoid:</strong> Only doing long slow runs. A CM/DM covers 10–13km per game but at varying intensities — short sprints, direction changes, recovery runs. Your conditioning must mirror that. We build your engine correctly.
+  </div>
+
+  <div class="section-title" style="margin-top:32px">PERIODIZATION</div>
+  <div class="section-sub">4-Phase structure across 7 weeks — every week has a specific training goal</div>
+
+  <div class="phase-grid">
+    <div class="phase-card p1">
+      <div class="phase-num">1</div>
+      <div class="phase-label">Phase One</div>
+      <div class="phase-name">FOUNDATION</div>
+      <div class="phase-weeks">Weeks 1–2</div>
+      <div class="phase-goal">Build the base. Prime the nervous system for heavy loading. Establish movement quality, aerobic base, and technical consistency. Loads are moderate — form over weight.</div>
+      <div class="phase-focuses">
+        <span class="tag blue">Movement Quality</span>
+        <span class="tag blue">Aerobic Base</span>
+        <span class="tag blue">Technique Primer</span>
+        <span class="tag blue">Form Focus</span>
+      </div>
+    </div>
+    <div class="phase-card p2">
+      <div class="phase-num">2</div>
+      <div class="phase-label">Phase Two</div>
+      <div class="phase-name">DEVELOPMENT</div>
+      <div class="phase-weeks">Weeks 3–4</div>
+      <div class="phase-goal">Increase intensity. Heavier lifts, faster intervals, more complex technical drills. Introduce plyometrics progressively. Volume peaks here — this is the hardest block.</div>
+      <div class="phase-focuses">
+        <span class="tag orange">Max Strength</span>
+        <span class="tag orange">Speed Intervals</span>
+        <span class="tag orange">Plyometrics</span>
+        <span class="tag orange">High Volume</span>
+      </div>
+    </div>
+    <div class="phase-card p3">
+      <div class="phase-num">3</div>
+      <div class="phase-label">Phase Three</div>
+      <div class="phase-name">PERFORMANCE</div>
+      <div class="phase-weeks">Weeks 5–6</div>
+      <div class="phase-goal">Convert strength into football-specific power and speed. Reduce gym volume, increase explosive work and pitch conditioning. Quality over quantity — sessions are fast and sharp.</div>
+      <div class="phase-focuses">
+        <span class="tag lime">Power Transfer</span>
+        <span class="tag lime">Sprint Training</span>
+        <span class="tag lime">RSA</span>
+        <span class="tag lime">Game Intensity</span>
+      </div>
+    </div>
+    <div class="phase-card p4">
+      <div class="phase-num">4</div>
+      <div class="phase-label">Phase Four</div>
+      <div class="phase-name">PRESEASON PREP</div>
+      <div class="phase-weeks">Week 7</div>
+      <div class="phase-goal">Taper and sharpen. Maintain all qualities while reducing fatigue. Priority shifts to technical sharpness and football readiness. Arrive at preseason fresh and match-ready.</div>
+      <div class="phase-focuses">
+        <span class="tag red">Taper</span>
+        <span class="tag red">Sharpness</span>
+        <span class="tag red">Match Readiness</span>
+        <span class="tag red">Reduce Volume</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ WEEKLY SCHEDULE ═══════════════════ -->
+<div class="section" id="weekly">
+  <div class="section-title">WEEKLY SCHEDULE</div>
+  <div class="section-sub">Built around your existing blueprint — structured and progressive</div>
+
+  <div class="week-grid">
+    <div class="day-card">
+      <div class="day-name">MON</div>
+      <div class="day-type">Upper + Aerobic</div>
+      <div class="day-item"><span class="day-dot dot-lime"></span>Upper body strength (pull-ups, bench, rows, shoulders)</div>
+      <div class="day-item"><span class="day-dot dot-blue"></span>30–40 min aerobic run (Z2 — conversational pace)</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>10 min ball mastery / weak foot</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">TUE</div>
+      <div class="day-type">Lower + Speed</div>
+      <div class="day-item"><span class="day-dot dot-lime"></span>Squats, RDLs, split squats, Nordic curls</div>
+      <div class="day-item"><span class="day-dot dot-red"></span>Acceleration + sprint work (pitch)</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Passing patterns / 1st touch drills</div>
+    </div>
+    <div class="day-card rest-day">
+      <div class="day-name">WED</div>
+      <div class="day-type">Rest / Recovery</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Mobility & stretching (20–30 min)</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Optional swim / sauna</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Film study / tactical analysis (30 min)</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">THU</div>
+      <div class="day-type">Full Body + Intervals</div>
+      <div class="day-item"><span class="day-dot dot-lime"></span>Lighter full body lifts (explosive focus)</div>
+      <div class="day-item"><span class="day-dot dot-orange"></span>Tempo + sprint interval runs</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Weak foot finishing / positional drills</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">FRI</div>
+      <div class="day-type">Plyometrics + Core</div>
+      <div class="day-item"><span class="day-dot dot-orange"></span>Box jumps, bounds, lateral jumps</div>
+      <div class="day-item"><span class="day-dot dot-lime"></span>Core: planks, rotational, anti-rotation</div>
+      <div class="day-item"><span class="day-dot dot-blue"></span>Agility + change of direction drills</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Dribbling / ball mastery</div>
+    </div>
+    <div class="day-card">
+      <div class="day-name">SAT</div>
+      <div class="day-type">Aerobic + Technical</div>
+      <div class="day-item"><span class="day-dot dot-blue"></span>Long steady run (30–50 min, Z2)</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Extended technical session (pitch)</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Finishing + positional play</div>
+    </div>
+    <div class="day-card rest-day">
+      <div class="day-name">SUN</div>
+      <div class="day-type">Full Rest</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Sauna / steam / swimming</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Reset mentally + physically</div>
+      <div class="day-item"><span class="day-dot dot-grey"></span>Film study (optional)</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Phase Adjustments:</strong> Weeks 1–2: keep intensity moderate, focus on form. Weeks 3–4: push weights and sprint intensity up. Weeks 5–6: reduce gym sets, increase pitch conditioning. Week 7: taper — reduce volume by 40%, keep intensity sharp.
+  </div>
+</div>
+
+<!-- ═══════════════════ SESSION DETAIL ═══════════════════ -->
+<div class="section" id="sessions">
+  <div class="section-title">SESSION DETAIL</div>
+  <div class="section-sub">Click any session to expand full structure — warmup, main work, volume, intensity, cooldown</div>
+
+  <!-- MONDAY -->
+  <div class="session-block" onclick="toggleSession(this)">
+    <div class="session-header">
+      <div class="session-title-wrap">
+        <span class="session-day">MON</span>
+        <span class="session-name">Upper Body Strength + Aerobic Run</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="session-duration">~90 MIN</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="session-body">
+      <div class="session-phase">
+        <div class="phase-tag">Warmup · 10 min</div>
+        <div class="phase-content">5 min light row / bike · Arm circles, band pull-aparts, cat-cow, thoracic rotations · 2×10 bodyweight rows to activate lats</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Main Strength · 45 min</div>
+        <div class="phase-content">
+          <strong>A1. Pull-Ups</strong> — 4×5–8 (add weight when 8 reps easy) <em>3 min rest</em><br>
+          <strong>A2. Barbell Bench Press</strong> — 4×6–8 <em>3 min rest</em><br>
+          <strong>B1. Pendlay Rows</strong> — 3×8 <em>2 min rest</em><br>
+          <strong>B2. DB Incline Press</strong> — 3×10 <em>2 min rest</em><br>
+          <strong>C1. Face Pulls</strong> — 3×15 · <strong>C2. Lateral Raises</strong> — 3×12 <em>90s rest</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Aerobic Run · 30 min</div>
+        <div class="phase-content">Zone 2 — you should be able to hold a conversation. 140–155 bpm if you track HR. <strong>NOT jogging mindlessly</strong> — focus on running mechanics, heel lift, forward lean. Builds your aerobic engine for match fitness.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Ball Work · 10 min</div>
+        <div class="phase-content">Ball mastery: inside/outside rolls, toe taps, directional changes. <strong>Weak foot only</strong> for 5 of the 10 minutes. Keep it light — purpose is touch retention after hard session.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Cooldown · 5 min</div>
+        <div class="phase-content">Lat stretch, chest doorway stretch, hip flexor kneeling stretch, shoulder cross-body. Hold each 30–45s.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUESDAY -->
+  <div class="session-block" onclick="toggleSession(this)">
+    <div class="session-header">
+      <div class="session-title-wrap">
+        <span class="session-day">TUE</span>
+        <span class="session-name">Lower Body Strength + Speed / Sprint Work</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="session-duration">~100 MIN</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="session-body">
+      <div class="session-phase">
+        <div class="phase-tag">Warmup · 12 min</div>
+        <div class="phase-content">Hip circles, leg swings (front/back + lateral), glute bridges 2×15, banded clamshells 2×15, A-march + A-skip drills × 20m each. Raise CNS for heavy load + speed work.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Main Strength · 45 min</div>
+        <div class="phase-content">
+          <strong>A. Back Squat</strong> — 4×5 (heavy, progressive) <em>3 min rest</em><br>
+          <strong>B. Romanian Deadlift (RDL)</strong> — 3×8 <em>2.5 min rest</em><br>
+          <strong>C. Bulgarian Split Squat</strong> — 3×8 each leg <em>2 min rest</em><br>
+          <strong>D. Nordic Hamstring Curl</strong> — 3×5–6 (slow eccentric, crucial injury prevention) <em>2 min rest</em><br>
+          <strong>E. Single-Leg Press</strong> — 2×12 each side <em>90s rest</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Sprint Work · 30 min</div>
+        <div class="phase-content">
+          <strong>Acceleration Runs:</strong> 6×20m from standing start — full effort, walk back recovery<br>
+          <strong>Short Sprints:</strong> 6×30m — focus on top speed in final 10m<br>
+          <strong>Flying 10s:</strong> 4×10m (already at top speed) — pure speed development<br>
+          <em>Full rest between reps (2–3 min) — speed work is NOT conditioning. Quality over quantity.</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Technical · 10 min</div>
+        <div class="phase-content">Passing patterns on pitch — 1-2 touch passing, switching the ball, receiving under pressure simulations. Focus on weight of pass and body shape before receiving.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Cooldown · 8 min</div>
+        <div class="phase-content">Hamstring stretch, quad stretch, hip flexor, pigeon pose. Then 5 min light walk. Hamstrings especially — you just did Nordics and sprinted.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THURSDAY -->
+  <div class="session-block" onclick="toggleSession(this)">
+    <div class="session-header">
+      <div class="session-title-wrap">
+        <span class="session-day">THU</span>
+        <span class="session-name">Full Body Power + Football Intervals</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="session-duration">~90 MIN</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="session-body">
+      <div class="session-phase">
+        <div class="phase-tag">Warmup · 10 min</div>
+        <div class="phase-content">Dynamic warm-up: high knees, butt kicks, lateral shuffles, inchworms × 3. Then 3 min light jog on pitch to prime for intervals.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Power Gym Work · 35 min</div>
+        <div class="phase-content">
+          <strong>A. Power Clean or DB Hang Clean</strong> — 4×4 (explosive, reset each rep) <em>3 min rest</em><br>
+          <strong>B1. Push Press</strong> — 3×6 · <strong>B2. Jump Squats</strong> (bodyweight or light bar) — 3×6 <em>2 min rest</em><br>
+          <strong>C1. DB Row</strong> — 3×10 · <strong>C2. Band Pull-Aparts</strong> — 3×15 <em>90s rest</em><br>
+          <em>Lighter than Monday/Tuesday — focus is SPEED of movement, not max load</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Football Intervals · 30 min</div>
+        <div class="phase-content">
+          <strong>Tempo Runs:</strong> 6×200m at 75–80% — 90s rest between reps (not full recovery — this is conditioning)<br>
+          <strong>Sprint Intervals:</strong> 4×40m at 95% — 2 min rest<br>
+          <strong>Work:Rest Ratio:</strong> Models the intermittent demands of midfield play. You are NOT running 5km steady — you are training your system to repeat high-intensity efforts.
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Technical · 10 min</div>
+        <div class="phase-content">Weak foot finishing — set up simple shooting drills with weak foot. 10–15 shots from inside/outside the box. Then 5 min positional awareness: move to receive in pockets, check shoulders (can practice with cones as reference).</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Cooldown · 5 min</div>
+        <div class="phase-content">Light jog 2 min, then full body stretch — calves, hamstrings, hip flexors, thoracic.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRIDAY -->
+  <div class="session-block" onclick="toggleSession(this)">
+    <div class="session-header">
+      <div class="session-title-wrap">
+        <span class="session-day">FRI</span>
+        <span class="session-name">Plyometrics + Core + Agility</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="session-duration">~75 MIN</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="session-body">
+      <div class="session-phase">
+        <div class="phase-tag">Warmup · 10 min</div>
+        <div class="phase-content">Ankle bounces × 30, pogo jumps × 20, lateral hops × 3×10 each side, hip mobility sequence. Prime tendons and reactive strength — critical before plyometrics.</div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Plyometrics · 25 min</div>
+        <div class="phase-content">
+          <strong>Phase 1–2:</strong> Box Jumps 4×5 (step down, don't jump down) · Broad Jumps 4×4 · Lateral Bounds 3×6 each side<br>
+          <strong>Phase 3:</strong> Add Drop Jumps 3×5 · Single-leg hops 3×5 each<br>
+          <em>Rest 2 min between sets. Ground contact time = key. Land soft, explode fast.</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Core · 15 min</div>
+        <div class="phase-content">
+          <strong>Plank</strong> — 3×45s · <strong>Side Plank</strong> — 3×30s each<br>
+          <strong>Pallof Press</strong> — 3×12 each side (anti-rotation — key for CM)<br>
+          <strong>Dead Bug</strong> — 3×10 each side · <strong>Cable Woodchops</strong> — 3×12 each side<br>
+          <em>Core stability for a CM = essential. You twist, turn, hold off opponents constantly.</em>
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Agility · 20 min</div>
+        <div class="phase-content">
+          <strong>5-10-5 Shuttle</strong> — 6 reps, full rest · <strong>T-Test</strong> — 4 reps<br>
+          <strong>Reactive COD:</strong> partner or ball-drop drill — react and change direction to a visual cue<br>
+          <strong>Ball:</strong> Dribble through cones at speed, sharp cuts, 1v1 turning practice
+        </div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Cooldown · 5 min</div>
+        <div class="phase-content">Full lower body stretch. Foam roll quads and calves. Hip flexor 45s each side.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SATURDAY -->
+  <div class="session-block" onclick="toggleSession(this)">
+    <div class="session-header">
+      <div class="session-title-wrap">
+        <span class="session-day">SAT</span>
+        <span class="session-name">Long Aerobic Run + Extended Technical Session</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="session-duration">~80 MIN</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="session-body">
+      <div class="session-phase">
+        <div class="phase-tag">Aerobic Run · 35–50 min</div>
+        <div class="phase-content">Zone 2 — steady state, 140–155 bpm, conversational. Wks 1–2: 30–35 min. Wks 3–4: 40–45 min. Wks 5–6: 45–50 min. Wk 7: back to 30 min (taper). <strong>This builds the aerobic base that underpins your repeat sprint ability in matches.</strong></div>
+      </div>
+      <div class="session-phase">
+        <div class="phase-tag">Technical · 30 min</div>
+        <div class="phase-content">
+          <strong>10 min:</strong> Ball mastery — moves, rolls, changes of direction<br>
+          <strong>10 min:</strong> Finishing — varied angles, weak foot included<br>
+          <strong>10 min:</strong> CM-specific: receiving in tight spaces, turning, playing through lines (use cones to simulate press)
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════ STRENGTH ═══════════════════ -->
+<div class="section" id="strength">
+  <div class="section-title">STRENGTH SYSTEM</div>
+  <div class="section-sub">Progressive overload structure — every 2 weeks the stimulus shifts</div>
+
+  <div class="callout">
+    <strong>Principle:</strong> At 16–17 with your training age, you will get strong quickly. Focus on <strong>compound movements</strong>, consistent progressive overload, and keeping injury prevention (Nordic curls, single-leg work) non-negotiable every week.
+  </div>
+
+  <h3 class="block-title">LOWER BODY — Primary Focus</h3>
+  <div class="session-block" style="cursor:default">
+    <div class="session-body" style="display:block">
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Phase 1 (Wks 1–2)</th>
+            <th>Phase 2 (Wks 3–4)</th>
+            <th>Phase 3 (Wks 5–6)</th>
+            <th>Goal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Back Squat</strong></td>
+            <td class="lime">3×8 @ 65%</td>
+            <td class="lime">4×5 @ 75–80%</td>
+            <td class="lime">4×4 @ 82–85%</td>
+            <td class="muted">Maximal lower body strength</td>
+          </tr>
+          <tr>
+            <td><strong>Romanian Deadlift</strong></td>
+            <td class="lime">3×10 moderate</td>
+            <td class="lime">3×8 heavier</td>
+            <td class="lime">3×6 heavy</td>
+            <td class="muted">Hamstring strength + injury prevention</td>
+          </tr>
+          <tr>
+            <td><strong>Bulgarian Split Squat</strong></td>
+            <td class="lime">3×10 each</td>
+            <td class="lime">3×8 each</td>
+            <td class="lime">3×6 + weight</td>
+            <td class="muted">Single-leg stability, knee health</td>
+          </tr>
+          <tr>
+            <td><strong>Nordic Hamstring Curl</strong></td>
+            <td class="lime">3×4 (eccentric)</td>
+            <td class="lime">3×5–6</td>
+            <td class="lime">3×6 full rep</td>
+            <td class="muted">Hamstring injury prevention — non-negotiable</td>
+          </tr>
+          <tr>
+            <td><strong>Single-Leg Press</strong></td>
+            <td class="lime">2×12 each</td>
+            <td class="lime">3×10 each</td>
+            <td class="lime">3×8 each</td>
+            <td class="muted">Unilateral balance, quad strength</td>
+          </tr>
+          <tr>
+            <td><strong>Hip Thrust</strong></td>
+            <td class="lime">3×12</td>
+            <td class="lime">3×10 heavier</td>
+            <td class="lime">4×8 max</td>
+            <td class="muted">Glute power — drives sprint speed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="block-title">UPPER BODY — Secondary Focus</h3>
+  <div class="session-block" style="cursor:default">
+    <div class="session-body" style="display:block">
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Phase 1</th>
+            <th>Phase 2</th>
+            <th>Phase 3</th>
+            <th>Goal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Pull-Ups</strong></td>
+            <td class="lime">3×max BW</td>
+            <td class="lime">4×6–8 weighted</td>
+            <td class="lime">4×5 heavier</td>
+            <td class="muted">Back width, relative strength</td>
+          </tr>
+          <tr>
+            <td><strong>Barbell Bench Press</strong></td>
+            <td class="lime">3×10 @ 60%</td>
+            <td class="lime">4×6–8 @ 72%</td>
+            <td class="lime">4×5 @ 80%</td>
+            <td class="muted">Chest + pressing strength</td>
+          </tr>
+          <tr>
+            <td><strong>Pendlay Rows</strong></td>
+            <td class="lime">3×10</td>
+            <td class="lime">3×8 heavy</td>
+            <td class="lime">3×6 max</td>
+            <td class="muted">Back thickness, posture</td>
+          </tr>
+          <tr>
+            <td><strong>Push Press</strong></td>
+            <td class="lime">3×8</td>
+            <td class="lime">3×6 power</td>
+            <td class="lime">4×5 explosive</td>
+            <td class="muted">Overhead power — trunk-to-shoulder chain</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="block-title">PROGRESSIVE OVERLOAD METHOD</h3>
+  <ul class="plan-list">
+    <li>Add 2.5–5kg to compound lifts when you hit the top end of the rep range across all sets</li>
+    <li>Log every session — weight, reps, and how it felt (RPE 1–10). Non-negotiable for progression</li>
+    <li>If a lift drops in quality (form breaks), do not add weight — add a rep instead</li>
+    <li>Deload in Week 7: drop all weights to 60% of your Phase 3 loads, same reps — flush fatigue</li>
+    <li>Prioritise sleep. At 16–17 you release growth hormone during deep sleep — this is when you actually get stronger</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════ SPEED & POWER ═══════════════════ -->
+<div class="section" id="speed">
+  <div class="section-title">SPEED & POWER SYSTEM</div>
+  <div class="section-sub">Acceleration, top speed, deceleration, reactive agility, jump ability</div>
+
+  <div class="callout">
+    <strong>Key Principle:</strong> Speed is a skill. You cannot train it when tired. Sprint sessions always come after a proper warmup, never at the end of a fatiguing session. Full recovery between reps = faster, more effective adaptation.
+  </div>
+
+  <h3 class="block-title">ACCELERATION (0–20m) — Tuesday Focus</h3>
+  <div class="session-block" style="cursor:default">
+    <div class="session-body" style="display:block">
+      <table>
+        <thead><tr><th>Drill</th><th>Volume</th><th>Rest</th><th>Phase</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Standing Start 10m</strong></td><td class="lime">8 reps</td><td class="muted">2 min full</td><td class="muted">All phases — base drill</td></tr>
+          <tr><td><strong>3-Point Start 20m</strong></td><td class="lime">6 reps</td><td class="muted">2.5 min</td><td class="muted">Phase 2 onwards</td></tr>
+          <tr><td><strong>Push-Up Start 20m</strong></td><td class="lime">4 reps</td><td class="muted">2.5 min</td><td class="muted">Phase 2–3 (reactive)</td></tr>
+          <tr><td><strong>Rolling Start 30m</strong></td><td class="lime">6 reps</td><td class="muted">3 min</td><td class="muted">Phase 2–3</td></tr>
+          <tr><td><strong>Flying 10m</strong></td><td class="lime">4 reps</td><td class="muted">3 min</td><td class="muted">Phase 3 — top speed</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="block-title">REPEAT SPRINT ABILITY (RSA) — Thursday Focus</h3>
+  <ul class="plan-list">
+    <li><strong>Phase 1:</strong> 6×40m at 85% — 2 min rest. Goal: aerobic speed endurance base</li>
+    <li><strong>Phase 2:</strong> 8×30m at 90% — 90s rest. Goal: reduced recovery tolerance (harder)</li>
+    <li><strong>Phase 3:</strong> 10×20m at 95%+ — 60s rest. Goal: true RSA — game-realistic demands</li>
+    <li>Track your split times each session. RSA is measured by how little speed you lose from rep 1 to rep 10</li>
+  </ul>
+
+  <h3 class="block-title">DECELERATION & CHANGE OF DIRECTION</h3>
+  <ul class="plan-list">
+    <li>5-10-5 shuttle: 3 cones, 5 yards each side. Time yourself weekly — this measures COD speed</li>
+    <li>T-Test: forward 10m, side shuffle 5m left, side shuffle 10m right, side shuffle 5m left, back 10m</li>
+    <li>Reactive drills: partner points left/right — you decelerate and sprint. Game-realistic because decisions happen under pressure</li>
+    <li>Teaching deceleration: land on full foot (not toe), knee slightly bent, hips back — avoid ACL stress position</li>
+  </ul>
+
+  <h3 class="block-title">PLYOMETRIC PROGRESSION</h3>
+  <div class="two-col">
+    <div class="stat-card">
+      <div class="stat-label">Phase 1 — Learn</div>
+      <div style="margin-top:10px">
+        <ul class="plan-list">
+          <li>Box Jumps 4×5 (focus on landing)</li>
+          <li>Broad Jumps 4×4</li>
+          <li>Lateral Bounds 3×6 each</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Phase 2 — Load</div>
+      <div style="margin-top:10px">
+        <ul class="plan-list">
+          <li>Drop Jumps 3×5</li>
+          <li>Single-Leg Hops 3×5 each</li>
+          <li>Depth Jump to Sprint 3×4</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Phase 3 — Express</div>
+      <div style="margin-top:10px">
+        <ul class="plan-list">
+          <li>Reactive Jumps (react to cue)</li>
+          <li>Bounding 4×20m</li>
+          <li>Altitude Drop + Sprint</li>
+        </ul>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Phase 4 — Maintain</div>
+      <div style="margin-top:10px">
+        <ul class="plan-list">
+          <li>Box Jumps 3×4 (reduced)</li>
+          <li>Broad Jumps 3×3</li>
+          <li>Keep it sharp, low volume</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TECHNICAL ═══════════════════ -->
+<div class="section" id="technical">
+  <div class="section-title">TECHNICAL DEVELOPMENT</div>
+  <div class="section-sub">CM/DM specific — ball mastery, passing, positioning, weak foot, tactical IQ</div>
+
+  <div class="callout">
+    <strong>Philosophy:</strong> Technical sessions in the offseason should be <em>deliberate practice</em> — not just kicking a ball around. Every session has a specific skill target. You are programming your nervous system through repetition. Weak foot gets equal time to strong foot.
+  </div>
+
+  <h3 class="block-title">DAILY MINIMUMS</h3>
+  <ul class="plan-list">
+    <li><strong>10 min ball mastery daily</strong> — inside/outside rolls, toe taps, Maradona, scissors, cruyff turns. Do this before any session</li>
+    <li><strong>Weak foot — 5 min minimum every day</strong> — passing against a wall, receiving and turning, finishing. This compounds over 7 weeks</li>
+    <li><strong>Film study — 3× per week, 20–30 min</strong> — watch elite CMs (Rodri, Pedri, Bellingham). Study positioning, movement off the ball, pressing triggers</li>
+  </ul>
+
+  <h3 class="block-title">CM/DM SPECIFIC DRILLS</h3>
+  <div class="session-block" style="cursor:default">
+    <div class="session-body" style="display:block">
+      <table>
+        <thead><tr><th>Skill</th><th>Drill</th><th>Volume</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Receiving in pockets</strong></td>
+            <td>Check run → receive → turn with 2 cones as defenders</td>
+            <td class="lime">3×8 each direction</td>
+            <td class="muted">CM positioning between lines</td>
+          </tr>
+          <tr>
+            <td><strong>Switch passes</strong></td>
+            <td>Long diagonal passes against wall or with partner, both feet</td>
+            <td class="lime">20 reps each foot</td>
+            <td class="muted">Changing the point of attack</td>
+          </tr>
+          <tr>
+            <td><strong>1-2 touch passing</strong></td>
+            <td>Rondo or wall — strictly 1–2 touch, varied angles</td>
+            <td class="lime">10 min</td>
+            <td class="muted">Speed of play under fatigue</td>
+          </tr>
+          <tr>
+            <td><strong>Turning under pressure</strong></td>
+            <td>Cruyff turn, Marseille turn, drag-back — cone as defender</td>
+            <td class="lime">3×10 each move</td>
+            <td class="muted">Escape pressing in midfield</td>
+          </tr>
+          <tr>
+            <td><strong>Weak foot finishing</strong></td>
+            <td>Inside box — 10 shots, varied positions, weak foot only</td>
+            <td class="lime">10–15 shots</td>
+            <td class="muted">Threat from both sides</td>
+          </tr>
+          <tr>
+            <td><strong>Press trigger response</strong></td>
+            <td>Cone setup simulating pressing — receive and play out fast</td>
+            <td class="lime">3×5 reps</td>
+            <td class="muted">Decision-making speed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="block-title">FILM STUDY TARGETS — DECISION MAKING</h3>
+  <ul class="plan-list">
+    <li>Watch how elite CMs scan before receiving the ball — count shoulder checks per possession</li>
+    <li>Study pressing triggers: when do they press? Ball played sideways to a CB? That's a trigger. Train yourself to recognize them</li>
+    <li>Positional shadows: how does Rodri position his body to block passing lanes while being available to receive?</li>
+    <li>Transition moments: where does a CM move the instant possession is won or lost?</li>
+    <li>Write 2–3 observations after each film session — makes it active learning, not passive watching</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════ RECOVERY ═══════════════════ -->
+<div class="section" id="recovery">
+  <div class="section-title">RECOVERY SYSTEM</div>
+  <div class="section-sub">Recovery is training. You don't improve during sessions — you improve during recovery from them.</div>
+
+  <div class="callout warn">
+    <strong>At 16–17 your recovery rate is exceptional</strong> — but only if you support it. Sleep deprivation at your age directly limits growth hormone release, reduces strength gains by up to 30%, and slows sprint adaptation. Sleep is the #1 recovery tool.
+  </div>
+
+  <h3 class="block-title">SLEEP PROTOCOL</h3>
+  <ul class="plan-list">
+    <li><strong>Target: 9 hours per night</strong> — you are still growing. 8 hours is the minimum. 9–10 is optimal</li>
+    <li>Same wake time every day — even weekends. Regulates cortisol rhythm which affects recovery</li>
+    <li>No screens 45 min before bed — blue light suppresses melatonin. Use this time for film study on a dim screen or stretching</li>
+    <li>Cool, dark room. 17–19°C is optimal for deep sleep quality</li>
+    <li>Track subjective sleep quality (1–10) each morning in your log alongside training data</li>
+  </ul>
+
+  <h3 class="block-title">WEDNESDAY RECOVERY SESSION — 30 MIN</h3>
+  <ul class="plan-list">
+    <li><strong>5 min:</strong> Light walk or easy bike to increase blood flow without loading muscles</li>
+    <li><strong>10 min:</strong> Full body mobility — hip circles, thoracic rotations, ankle CARs, shoulder circles</li>
+    <li><strong>10 min:</strong> Static stretching — hamstrings 45s, hip flexors 45s, quads 45s, calves 45s, chest 30s</li>
+    <li><strong>5 min:</strong> Foam rolling — quads, IT band, calves, thoracic spine</li>
+    <li><strong>Optional:</strong> Cold water immersion (10 min, 10–15°C) or contrast shower to reduce inflammation</li>
+  </ul>
+
+  <h3 class="block-title">WEEKLY INJURY PREVENTION NON-NEGOTIABLES</h3>
+  <ul class="plan-list">
+    <li><strong>Nordic Hamstring Curls every Tuesday</strong> — the single most evidence-based exercise for hamstring injury prevention in footballers (reduces risk ~51%)</li>
+    <li><strong>Hip stability work weekly</strong> — clamshells, single-leg glute bridges, lateral band walks before any lower session</li>
+    <li><strong>Ankle proprioception</strong> — single-leg balance (30s each, eyes closed) every warmup</li>
+    <li><strong>Eccentric loading</strong> — slow 4-count lowering phase on squats, RDLs, and Nordic curls protects tendons</li>
+    <li><strong>Never skip warmup</strong> — cold muscle sprinting is how hamstrings tear. Non-negotiable</li>
+  </ul>
+
+  <h3 class="block-title">DELOAD — WEEK 7</h3>
+  <ul class="plan-list">
+    <li>Reduce all gym volume by 40% — same movements, same intensity, fewer sets</li>
+    <li>Reduce conditioning volume by 40% — keep sprints sharp but do fewer reps</li>
+    <li>Increase technical work — arrive at preseason with sharp touch and fresh legs</li>
+    <li>Prioritise sleep and nutrition this week more than any other</li>
+    <li>Do not try to cram extra sessions — that defeats the deload purpose</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════ NUTRITION ═══════════════════ -->
+<div class="section" id="nutrition">
+  <div class="section-title">PERFORMANCE NUTRITION</div>
+  <div class="section-sub">Fuel your training. Recover faster. Build a stronger body. Simple, practical principles.</div>
+
+  <div class="callout">
+    <strong>Context:</strong> At 16–17 in hard training, you need to eat enough — most young athletes under-eat and then wonder why they're not getting stronger. Food is the raw material for everything: muscle, speed, recovery, focus.
+  </div>
+
+  <div class="nutrition-grid">
+    <div class="nut-card protein">
+      <div class="nut-label">Protein</div>
+      <div class="nut-value">1.8–2.2g</div>
+      <div class="nut-desc">Per kg bodyweight daily. Chicken, eggs, beef, fish, Greek yogurt, cottage cheese. Spread across 4–5 meals — not one big serving.</div>
+    </div>
+    <div class="nut-card carb">
+      <div class="nut-label">Carbohydrates</div>
+      <div class="nut-value">5–7g</div>
+      <div class="nut-desc">Per kg on training days. Rice, oats, pasta, potatoes, fruit. This is your fuel — don't fear carbs. Reduce slightly on rest days.</div>
+    </div>
+    <div class="nut-card fat">
+      <div class="nut-label">Healthy Fats</div>
+      <div class="nut-value">1–1.2g</div>
+      <div class="nut-desc">Per kg daily. Avocado, olive oil, nuts, oily fish. Support hormone production — critical for testosterone at your age.</div>
+    </div>
+    <div class="nut-card hydra">
+      <div class="nut-label">Hydration</div>
+      <div class="nut-value">3–4L</div>
+      <div class="nut-desc">Water per day minimum. Add electrolytes (sodium, potassium) on heavy training days — especially after sprint sessions. Urine should be pale yellow.</div>
+    </div>
+    <div class="nut-card sleep">
+      <div class="nut-label">Before Bed</div>
+      <div class="nut-value">30–40g</div>
+      <div class="nut-desc">Casein protein before sleep (cottage cheese, Greek yogurt, casein shake). Feeds muscle protein synthesis during the 9 hours of sleep you're getting.</div>
+    </div>
+    <div class="nut-card timing">
+      <div class="nut-label">Pre-Training</div>
+      <div class="nut-value">60–90</div>
+      <div class="nut-desc">Minutes before training: 40–60g carbs + 20g protein. Banana + protein shake is fine. Don't train fasted for high-intensity sessions.</div>
+    </div>
+  </div>
+
+  <h3 class="block-title">POST-SESSION RECOVERY WINDOW</h3>
+  <ul class="plan-list">
+    <li><strong>Within 30–45 minutes after session:</strong> 30–40g protein + 60–80g carbs. This window matters most on heavy training days</li>
+    <li>Chocolate milk is actually a legitimate post-training option — 3:1 carb to protein ratio, cheap, effective</li>
+    <li>Creatine monohydrate (3–5g daily) is safe, evidence-based, and highly effective for strength and sprint performance at your age. Speak to a doctor or nutritionist if unsure</li>
+    <li>Avoid ultra-processed food on training days — quality fuel = quality output</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════ METRICS ═══════════════════ -->
+<div class="section" id="metrics">
+  <div class="section-title">MEASUREMENT SYSTEM</div>
+  <div class="section-sub">Test at start of Week 1, end of Week 4, and end of Week 7. Track everything.</div>
+
+  <div class="callout">
+    <strong>Why measure?</strong> Without data, you don't know if the plan is working. These tests take 30–45 minutes and tell you exactly where you've improved. Run the same tests each time under the same conditions (same time of day, same warm-up).
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-icon">⚡</div>
+      <div class="metric-name">SPRINT SPEED</div>
+      <div class="metric-test">10m sprint (acceleration) and 30m sprint (top speed). Use phone slow-motion or a partner with a stopwatch. Repeat 3 times, take best.</div>
+      <div class="metric-target">Target: improve 10m by 0.1–0.15s over offseason</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🏋️</div>
+      <div class="metric-name">SQUAT STRENGTH</div>
+      <div class="metric-test">3-rep max back squat (or estimated 1RM from 5-rep max). Log every Tuesday. Simple strength progress marker.</div>
+      <div class="metric-target">Target: +15–25kg on 3RM over 7 weeks</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🦵</div>
+      <div class="metric-name">JUMP POWER</div>
+      <div class="metric-test">Standing vertical jump (measure against wall) and broad jump (mark take-off and landing). Tests explosive power development.</div>
+      <div class="metric-target">Target: +4–6cm vertical, +20–30cm broad</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🔄</div>
+      <div class="metric-name">COD SPEED</div>
+      <div class="metric-test">5-10-5 shuttle. Time with phone or partner. Run 3 times, take best. Measures deceleration + acceleration + agility.</div>
+      <div class="metric-target">Target: improve by 0.2–0.4 seconds</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">💨</div>
+      <div class="metric-name">CONDITIONING</div>
+      <div class="metric-test">Yo-Yo Intermittent Recovery Test Level 1 (or beep test). Measures football-specific aerobic capacity — repeat sprint tolerance.</div>
+      <div class="metric-target">Target: meaningful level improvement Week 4 and 7</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">🎯</div>
+      <div class="metric-name">TECHNICAL</div>
+      <div class="metric-test">Wall passes in 60 seconds (1 touch), weak foot only. Count successful accurate passes. Tracks technical improvement objectively.</div>
+      <div class="metric-target">Target: +10–20% reps from Week 1 to Week 7</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">💪</div>
+      <div class="metric-name">PULL-UP MAX</div>
+      <div class="metric-test">Max bodyweight pull-ups (dead hang start). Simple relative strength marker — important for a young athlete.</div>
+      <div class="metric-target">Target: +3–5 reps over offseason</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-icon">📊</div>
+      <div class="metric-name">BODY COMPOSITION</div>
+      <div class="metric-test">Weight + waist measurement. Not the priority, but track it. You should gain some lean mass. Don't chase weight loss — chase performance.</div>
+      <div class="metric-target">Slight weight gain (muscle) is a positive sign</div>
+    </div>
+  </div>
+
+  <h3 class="block-title">TRAINING LOG — WHAT TO TRACK DAILY</h3>
+  <ul class="plan-list">
+    <li><strong>Gym:</strong> Every exercise, weight used, reps completed, RPE (1–10)</li>
+    <li><strong>Speed work:</strong> Distance, reps, and subjective effort — did you feel fast?</li>
+    <li><strong>Recovery:</strong> Sleep hours (1–10 quality), soreness level (1–10), energy (1–10)</li>
+    <li><strong>Technical:</strong> What you worked on and one thing you want to improve next session</li>
+    <li><strong>Nutrition:</strong> Simple check — did you hit protein target? Did you hydrate enough?</li>
+    <li>Review weekly — if energy is consistently 4/10 or lower, you may be under-recovering. Adjust load or sleep</li>
+  </ul>
+</div>
+
+</main>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleSession(el) {
+  el.classList.toggle('open');
+}
+</script>
+</body>
+</html>
